@@ -1170,11 +1170,11 @@ margin-right: 0; }
 <h2>最初のセルを実行する</h2>
 <p>ノートブックを開き、0節のセルを実行する。</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href></a><span class="co"># OSのコードネームを確認（jammy = Ubuntu 22.04 など）</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href></a><span class="co"># OSのコードネームを確認（noble = Ubuntu 24.04 など）</span></span>
 <span id="cb1-2"><a href></a><span class="fu">system</span>(<span class="st">&quot;lsb_release -cs&quot;</span>, <span class="at">intern =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb1-3"><a href></a></span>
 <span id="cb1-4"><a href></a><span class="fu">options</span>(</span>
-<span id="cb1-5"><a href></a>  <span class="at">repos =</span> <span class="fu">c</span>(<span class="at">CRAN =</span> <span class="st">&quot;https://packagemanager.posit.co/cran/__linux__/jammy/2026-09-01&quot;</span>),</span>
+<span id="cb1-5"><a href></a>  <span class="at">repos =</span> <span class="fu">c</span>(<span class="at">CRAN =</span> <span class="st">&quot;https://packagemanager.posit.co/cran/__linux__/noble/2026-09-01&quot;</span>),</span>
 <span id="cb1-6"><a href></a>  <span class="at">HTTPUserAgent =</span> <span class="fu">sprintf</span>(<span class="st">&quot;R/%s R (%s)&quot;</span>, <span class="fu">getRversion</span>(),</span>
 <span id="cb1-7"><a href></a>    <span class="fu">paste</span>(<span class="fu">getRversion</span>(), R.version[<span class="st">&quot;platform&quot;</span>], R.version[<span class="st">&quot;arch&quot;</span>], R.version[<span class="st">&quot;os&quot;</span>]))</span>
 <span id="cb1-8"><a href></a>)</span>
