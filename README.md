@@ -6,6 +6,7 @@
 | 回 | スライド | ノートブック |
 | --- | --- | --- |
 | 第1回 定常性と自己相関 | [開く](https://k0heiun0.github.io/timeseries_preview/slides/01-stationarity.html) | [Colabで開く](https://colab.research.google.com/github/k0heiun0/timeseries_preview/blob/main/lectures/01-stationarity/notebook.ipynb) |
+| 第2回 分解と予測評価 | [開く](https://k0heiun0.github.io/timeseries_preview/slides/02-decomposition.html) | [Colabで開く](https://colab.research.google.com/github/k0heiun0/timeseries_preview/blob/main/lectures/02-decomposition/notebook.ipynb) |
 
 ## ノートブックの使い方
 
