@@ -1126,6 +1126,34 @@ margin-right: 0; }
 <li>時系列データでは、その前提が成り立たない</li>
 </ul>
 </section>
+<section id="いつもの統計の前提iid" class="slide level2">
+<h2>いつもの統計の前提：iid</h2>
+<p>観測 <span class="math inline">x_1, \dots, x_n</span> が、互いに独立で、同じ分布に従う。</p>
+<p>これを独立同分布（independent and identically distributed, iid）と呼ぶ。条件は2つある。</p>
+<ul>
+<li>独立：ある観測の値が、ほかの観測の値について何も教えない</li>
+<li>同じ分布：どの観測も、同じ平均・同じ分散・同じ形の分布から出ている</li>
+</ul>
+</section>
+<section id="iidは便利な仮定" class="slide level2">
+<h2>iidは便利な仮定</h2>
+<p>iidを仮定すると、計算が簡単になる。</p>
+<ul>
+<li>和の分散が、分散の和になる</li>
+<li>標本平均の標準誤差が <span class="math inline">\sigma/\sqrt{n}</span> になる</li>
+<li>回帰の標準誤差とp値が、教科書の式で出る</li>
+</ul>
+<p>これまでに学んだ検定や信頼区間の多くは、iidの上に建っている。</p>
+</section>
+<section id="iidは疑うべき仮定" class="slide level2">
+<h2>iidは疑うべき仮定</h2>
+<p>便利であることと、成り立つことは別である。</p>
+<ul>
+<li>時系列では、今日の値は昨日の値と似る。「独立」が、まず成り立たない</li>
+<li>平均や分散が時間とともに変わることもある。「同じ分布」も、成り立つとは限らない</li>
+</ul>
+<p>今日は、iidが崩れたデータにiid前提の統計を使うと何が起きるかを見る。そのうえで、iidの代わりに何を仮定すればよいかを考える。</p>
+</section>
 <section id="今日の進め方" class="slide level2">
 <h2>今日の進め方</h2>
 <table class="caption-top">
@@ -1300,7 +1328,7 @@ y_t = a + b\,x_t + e_t
 </section>
 <section id="足し合わせる前の乱数で試す" class="slide level2">
 <h2>足し合わせる前の乱数で試す</h2>
-<p><code>cumsum()</code>を外す。違いはそれだけである。</p>
+<p><code>cumsum()</code>を外す。足し合わせる前の乱数は、iidである。違いはそれだけである。</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
 <span id="cb5-2"><a href></a>p_iid <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, {</span>
@@ -1324,15 +1352,15 @@ y_t = a + b\,x_t + e_t
 </div>
 </div>
 </div>
-<p>左は独立な値の列、右はランダムウォーク。赤い破線が0.05。左は平らに散らばり、右は0の近くに集まる。</p>
+<p>左はiidの乱数、右はランダムウォーク。赤い破線が0.05。左は平らに散らばり、右は0の近くに集まる。</p>
 </section>
 <section id="検定は壊れていない" class="slide level2">
 <h2>検定は壊れていない</h2>
 <ul>
-<li>足し合わせる前（独立な値の列）：4.4%</li>
+<li>足し合わせる前（iid）：4.4%</li>
 <li>足し合わせた後（ランダムウォーク）：83.3%</li>
 </ul>
-<p>原因は、時間方向につながったデータに使ったことにある。</p>
+<p>原因は、iidでないデータに、iid前提の検定を使ったことにある。</p>
 </section>
 <section id="データを増やせば直るか" class="slide level2">
 <h2>データを増やせば直るか</h2>
@@ -1559,6 +1587,15 @@ x_1,\ x_2,\ \dots,\ x_n
 <li>共分散が時点の差だけで決まる：<span class="math inline">\mathrm{Cov}(x_t, x_{t+h}) = \gamma(h)</span></li>
 </ol>
 <p>平均と共分散だけについての条件である。この授業で「定常」と言えば、弱定常を指す。</p>
+</section>
+<section id="iidと定常の関係" class="slide level2">
+<h2>iidと定常の関係</h2>
+<ul>
+<li>iidなら、強定常である（分散が有限なら、弱定常でもある）</li>
+<li>定常は、iidの「同じ分布」を、時系列向けに言い直した条件にあたる</li>
+<li>定常は、「独立」を求めない。時点どうしが従属していてよい</li>
+</ul>
+<p>iidから「独立」を外し、「ずらしても変わらない」だけを残したものが、定常である。</p>
 </section>
 <section id="弱定常のときの書き方" class="slide level2">
 <h2>弱定常のときの書き方</h2>
@@ -1812,7 +1849,7 @@ x_t = \phi\,x_{t-1} + w_t, \qquad |\phi| &lt; 1
 </section>
 <section id="青い破線ホワイトノイズの標本acf" class="slide level2">
 <h2>青い破線：ホワイトノイズの標本ACF</h2>
-<p>データがホワイトノイズ（独立で同じ分布）で、<span class="math inline">n</span> が大きいとき、</p>
+<p>データがiidのホワイトノイズで、<span class="math inline">n</span> が大きいとき、</p>
 <p><span class="math display">
 \hat{\rho}(h) \ \text{は、近似的に}\ N\!\left(0,\ \frac{1}{n}\right) \ \text{に従う} \qquad (h \ge 1)
 </span></p>
@@ -2006,6 +2043,36 @@ x_t = \phi\,x_{t-1} + w_t
 </tbody>
 </table>
 <p>ACFとPACFの形からモデルを選ぶ方法は、第3回で扱う。</p>
+</section>
+<section id="iidのどこが崩れているか" class="slide level2">
+<h2>iidのどこが崩れているか</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>系列</th>
+<th>同じ分布か</th>
+<th>独立か</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ホワイトノイズ（正規乱数）</td>
+<td>同じ</td>
+<td>独立</td>
+</tr>
+<tr class="even">
+<td>AR(1)</td>
+<td>同じ（定常）</td>
+<td>独立でない（<span class="math inline">\rho(h) = \phi^h</span>）</td>
+</tr>
+<tr class="odd">
+<td>ランダムウォーク</td>
+<td>同じでない（分散が <span class="math inline">t\,\sigma_w^2</span>）</td>
+<td>独立でない</td>
+</tr>
+</tbody>
+</table>
+<p>AR(1)は「独立」だけが崩れ、ランダムウォークは両方が崩れている。崩れ方によって、起きる問題も対処も変わる。</p>
 </section></section>
 <section>
 <section id="標本平均と実効サンプルサイズ" class="title-slide slide level1 center">
@@ -2036,7 +2103,7 @@ x_t = \phi\,x_{t-1} + w_t
 <span id="cb14-10"><a href></a>  <span class="fu">data.frame</span>(</span>
 <span id="cb14-11"><a href></a>    <span class="at">phi =</span> phi,</span>
 <span id="cb14-12"><a href></a>    <span class="at">var_sim =</span> <span class="fu">var</span>(xbar),                <span class="co"># シミュレーションで測った分散</span></span>
-<span id="cb14-13"><a href></a>    <span class="at">var_iid =</span> gamma0 <span class="sc">/</span> n,               <span class="co"># 独立だと思ったときの式</span></span>
+<span id="cb14-13"><a href></a>    <span class="at">var_iid =</span> gamma0 <span class="sc">/</span> n,               <span class="co"># iidだと思ったときの式</span></span>
 <span id="cb14-14"><a href></a>    <span class="at">var_theory =</span> gamma0 <span class="sc">/</span> n <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> phi) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> phi),   <span class="co"># 従属性を入れた式</span></span>
 <span id="cb14-15"><a href></a>    <span class="at">n_eff =</span> n <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> phi) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> phi)   <span class="co"># 実効サンプルサイズ</span></span>
 <span id="cb14-16"><a href></a>  )</span>
@@ -2055,7 +2122,7 @@ x_t = \phi\,x_{t-1} + w_t
 </div>
 </div>
 </div>
-<p>灰色が、2000個の標本平均のヒストグラム。赤い曲線は、独立だと思ったとき（<span class="math inline">\sigma/\sqrt{n}</span>）の分布。</p>
+<p>灰色が、2000個の標本平均のヒストグラム。赤い曲線は、iidだと思ったとき（<span class="math inline">\sigma/\sqrt{n}</span>）の分布。</p>
 </section>
 <section id="図を読む-2" class="slide level2">
 <h2>図を読む</h2>
@@ -2077,18 +2144,18 @@ x_t = \phi\,x_{t-1} + w_t
 </div>
 </div>
 <ul>
-<li><code>var_sim</code>：測った分散。<code>var_iid</code>：独立だと思ったときの式 <span class="math inline">\gamma(0)/n</span></li>
+<li><code>var_sim</code>：測った分散。<code>var_iid</code>：iidだと思ったときの式 <span class="math inline">\gamma(0)/n</span></li>
 <li><span class="math inline">\phi = 0.9</span> では、測った分散が式の約18倍</li>
 </ul>
 <p>残りの2列（<code>var_theory</code>と<code>n_eff</code>）は、これから導く式の値である。</p>
 </section>
-<section id="独立なときの導出" class="slide level2">
-<h2>独立なときの導出</h2>
+<section id="iidのときの導出" class="slide level2">
+<h2>iidのときの導出</h2>
 <p><span class="math display">
 \mathrm{Var}(\bar{x}) = \mathrm{Var}\!\left(\frac{1}{n}\sum_{t=1}^{n} x_t\right)
 = \frac{1}{n^2} \sum_{t=1}^{n} \mathrm{Var}(x_t) = \frac{\sigma^2}{n}
 </span></p>
-<p>2つ目の等号で、「和の分散は分散の和」を使った。これは、観測どうしの共分散が0のときだけ成り立つ。</p>
+<p>2つ目の等号で、「和の分散は分散の和」を使った。これは、観測どうしの共分散が0のときだけ成り立つ。iidの「独立」を使っているのは、ここである。</p>
 </section>
 <section id="従属なときは共分散が残る" class="slide level2">
 <h2>従属なときは、共分散が残る</h2>
@@ -2169,7 +2236,7 @@ x_t = \phi\,x_{t-1} + w_t
 <section id="式を読む" class="slide level2">
 <h2>式を読む</h2>
 <p><span class="math display">
-\mathrm{Var}(\bar{x}) = \underbrace{\frac{\gamma(0)}{n}}_{\text{独立なときの式}} \times \underbrace{\left\{ 1 + 2 \sum_{h=1}^{n-1} \left(1 - \frac{h}{n}\right) \rho(h) \right\}}_{\text{従属性による倍率}}
+\mathrm{Var}(\bar{x}) = \underbrace{\frac{\gamma(0)}{n}}_{\text{iidのときの式}} \times \underbrace{\left\{ 1 + 2 \sum_{h=1}^{n-1} \left(1 - \frac{h}{n}\right) \rho(h) \right\}}_{\text{従属性による倍率}}
 </span></p>
 <ul>
 <li>自己相関がすべて0なら、倍率は1</li>
@@ -2201,7 +2268,7 @@ x_t = \phi\,x_{t-1} + w_t
 <p><span class="math display">
 \mathrm{Var}(\bar{x}) \approx \frac{\gamma(0)}{n} \cdot \frac{1 + \phi}{1 - \phi}
 </span></p>
-<p>独立なときの式 <span class="math inline">\gamma(0)/n</span> の、<span class="math inline">(1+\phi)/(1-\phi)</span> 倍になる。</p>
+<p>iidのときの式 <span class="math inline">\gamma(0)/n</span> の、<span class="math inline">(1+\phi)/(1-\phi)</span> 倍になる。</p>
 </section>
 <section id="倍率を図にする" class="slide level2">
 <h2>倍率を図にする</h2>
@@ -2245,7 +2312,7 @@ x_t = \phi\,x_{t-1} + w_t
 </div>
 <ul>
 <li>測った分散（<code>var_sim</code>）は、導いた式（<code>var_theory</code>）に近い</li>
-<li><span class="math inline">\phi = 0.9</span> では、測った分散は0.479、導いた式は0.500、独立の式は0.026</li>
+<li><span class="math inline">\phi = 0.9</span> では、測った分散は0.479、導いた式は0.500、iidの式は0.026</li>
 </ul>
 <p>ヒストグラムが赤い曲線より広かった分を、式で説明できた。</p>
 </section>
@@ -2297,7 +2364,7 @@ x_t = \phi\,x_{t-1} + w_t
 </section>
 <section id="回帰の検定が頼っている前提" class="slide level2">
 <h2>回帰の検定が頼っている前提</h2>
-<p>回帰の標準誤差は、誤差 <span class="math inline">e_t</span> が互いに独立だとして計算される。</p>
+<p>回帰の標準誤差は、誤差 <span class="math inline">e_t</span> がiidだとして計算される。</p>
 <ul>
 <li>ランダムウォークどうしの回帰では、図のとおり、残差が強く自己相関する</li>
 <li>独立な200個ぶんの情報がある、と数えてしまう</li>
@@ -2349,7 +2416,7 @@ x_t - x_{t-1} = w_t
 <li>定常：平均が一定で、共分散がラグだけで決まる</li>
 <li>ACF：ラグごとの相関。ゆっくりとしか小さくならなければ、定常でない合図</li>
 <li>従属なデータでは、標本平均の分散が <span class="math inline">1 + 2\sum \rho(h)</span> 倍になる</li>
-<li>見せかけの回帰は、定常でない系列に、独立を前提とした検定を使うと起きる</li>
+<li>見せかけの回帰は、定常でない系列に、iidを前提とした検定を使うと起きる</li>
 </ul>
 <p>ここからは、実データで同じ道具を使う。</p>
 </section></section>
@@ -2649,7 +2716,7 @@ r_t = 100 \times \left( \log P_t - \log P_{t-1} \right)
 <section id="理論と合わないところ" class="slide level2">
 <h2>理論と合わないところ</h2>
 <ul>
-<li>収益率は、無相関に近い。しかし、独立ではない</li>
+<li>収益率は、無相関に近い。しかし、独立ではない。つまり、iidではない</li>
 <li>無相関でも、絶対値や2乗に従属性が残ることがある</li>
 <li>ホワイトノイズの定義は、無相関までしか求めていなかった</li>
 </ul>
@@ -2687,7 +2754,7 @@ r_t = 100 \times \left( \log P_t - \log P_{t-1} \right)
 <ul>
 <li><code>rho1</code>：ラグ1の標本ACF</li>
 <li><code>n_eff</code>：実効サンプルサイズ（<code>n / factor</code>）</li>
-<li><code>se_iid</code>：独立だと思ったときの標準誤差、<code>se_dep</code>：従属性を入れた標準誤差</li>
+<li><code>se_iid</code>：iidだと思ったときの標準誤差、<code>se_dep</code>：従属性を入れた標準誤差</li>
 </ul>
 </section>
 <section id="結果を読む" class="slide level2">
@@ -2844,8 +2911,17 @@ r_t = 100 \times \left( \log P_t - \log P_{t-1} \right)
 <ul>
 <li>定常でない系列どうしの回帰は、無関係でも有意になる（83.3%）</li>
 <li>自己相関のある系列では、標本平均の標準誤差を小さく見積もる</li>
-<li>どちらも、独立な情報の量を多く数えすぎることから起きる</li>
+<li>どちらも、iidでないデータをiidとして扱い、独立な情報の量を多く数えすぎることから起きる</li>
 </ul>
+</section>
+<section id="iidという仮定とのつきあい方" class="slide level2">
+<h2>iidという仮定とのつきあい方</h2>
+<ul>
+<li>iidは便利な仮定である。ただし、データがそうなっている保証はない</li>
+<li>時系列では、まず疑う。図とACFで、どこが崩れているかを確かめる</li>
+<li>崩れていたら、定常性のような弱い仮定に置き換えるか、差分などで系列を直す</li>
+</ul>
+<p>この授業で扱うモデルは、どれも「iidの代わりに何を仮定するか」の答えである。</p>
 </section>
 <section id="今日の道具" class="slide level2">
 <h2>今日の道具</h2>
