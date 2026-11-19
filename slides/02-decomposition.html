@@ -1185,7 +1185,7 @@ margin-right: 0; }
 </tr>
 </tbody>
 </table>
-<p>コードはすべて完成している。書く必要はない。</p>
+<p>コードはすべて完成している。書く必要はない。式の導出と詳細は、読み物（pdf）にある。</p>
 </section>
 <section id="最初のセルを実行する" class="slide level2 fit-90">
 <h2>最初のセルを実行する</h2>
@@ -1444,6 +1444,9 @@ x(t) = \sum_{k=1}^{K} c_k \, \phi_k(t)
 <li>第2項：曲線の曲がりの大きさ。小さいほど、なめらか</li>
 <li><span class="math inline">\lambda</span>：2つのつり合いを決める数。粗さの罰則（roughness penalty）の強さ</li>
 </ul>
+<div class="credit">
+<p>重みを求める式と、GCVの式は、読み物の「関数データ解析による補間」と「平滑化パラメータの選び方」の項。</p>
+</div>
 </section>
 <section id="λでなめらかさが変わる" class="slide level2">
 <h2>λで、なめらかさが変わる</h2>
@@ -1835,6 +1838,9 @@ y_t = T_t + S_t + R_t
 <li>ノイズも、7個の平均になるので小さくなる</li>
 </ul>
 <p>平均する幅を、季節の周期に合わせるのが要点である。</p>
+<div class="credit">
+<p>式でたどる確かめは、読み物の「移動平均で傾向を取り出す」の項。</p>
+</div>
 </section>
 <section id="季節成分の取り出し方曜日ごとに平均する" class="slide level2">
 <h2>季節成分の取り出し方：曜日ごとに平均する</h2>
