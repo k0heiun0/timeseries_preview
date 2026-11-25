@@ -1198,7 +1198,7 @@ margin-right: 0; }
 <span id="cb1-6"><a href></a>  <span class="at">HTTPUserAgent =</span> <span class="fu">sprintf</span>(<span class="st">&quot;R/%s R (%s)&quot;</span>, <span class="fu">getRversion</span>(),</span>
 <span id="cb1-7"><a href></a>    <span class="fu">paste</span>(<span class="fu">getRversion</span>(), R.version[<span class="st">&quot;platform&quot;</span>], R.version[<span class="st">&quot;arch&quot;</span>], R.version[<span class="st">&quot;os&quot;</span>]))</span>
 <span id="cb1-8"><a href></a>)</span>
-<span id="cb1-9"><a href></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;tsibble&quot;</span>, <span class="st">&quot;tsibbledata&quot;</span>, <span class="st">&quot;fable&quot;</span>, <span class="st">&quot;feasts&quot;</span>, <span class="st">&quot;fpp3&quot;</span>))</span>
+<span id="cb1-9"><a href></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;tsibble&quot;</span>, <span class="st">&quot;tsibbledata&quot;</span>, <span class="st">&quot;fable&quot;</span>, <span class="st">&quot;feasts&quot;</span>))</span>
 <span id="cb1-10"><a href></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
@@ -1207,7 +1207,7 @@ margin-right: 0; }
 <ul>
 <li>ColabのOSの名前を表示する</li>
 <li>パッケージを取ってくる場所と日付を固定する（全員が同じ版を使うため）</li>
-<li>今日使う5つのパッケージを入れる（<code>fpp3</code>は、データを取り出すためだけに入れる）</li>
+<li>今日使う4つのパッケージを入れる</li>
 </ul>
 <p>インストールが終わるまで、次のセルは動かない。待つあいだに話を進める。</p>
 <div class="credit">
@@ -2317,7 +2317,7 @@ y_t - y_{t-1} = \beta_1 \left( x_t - x_{t-1} \right) + w_t
 <p>どちらも四半期のデータである。</p>
 <ul>
 <li><code>aus_production</code>（<code>tsibbledata</code>パッケージ）：オーストラリアの生産量。季節がある。指数平滑法に使う</li>
-<li><code>us_change</code>（<code>fpp3</code>パッケージ）：米国の経済指標の変化率。回帰に使う</li>
+<li><code>us_change</code>（参考書FPP3のデータ。CSVファイルから読む）：米国の経済指標の変化率。回帰に使う</li>
 </ul>
 </section>
 <section id="解析の流れ" class="slide level2">
@@ -2587,8 +2587,11 @@ y_t - y_{t-1} = \beta_1 \left( x_t - x_{t-1} \right) + w_t
 <section id="経済指標のデータを確かめる" class="slide level2 fit-80">
 <h2>経済指標のデータを確かめる</h2>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href></a>us_change <span class="ot">&lt;-</span> fpp3<span class="sc">::</span>us_change</span>
-<span id="cb49-2"><a href></a><span class="fu">glimpse</span>(us_change)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href></a>data_url <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/k0heiun0/timeseries_preview/main/data/&quot;</span></span>
+<span id="cb49-2"><a href></a>us_change <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">paste0</span>(data_url, <span class="st">&quot;us_change.csv&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb49-3"><a href></a>  <span class="fu">mutate</span>(<span class="at">Quarter =</span> <span class="fu">yearquarter</span>(Quarter)) <span class="sc">|&gt;</span></span>
+<span id="cb49-4"><a href></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> Quarter)</span>
+<span id="cb49-5"><a href></a><span class="fu">glimpse</span>(us_change)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; Rows: 198
 #&gt; Columns: 6
@@ -2621,7 +2624,7 @@ y_t - y_{t-1} = \beta_1 \left( x_t - x_{t-1} \right) + w_t
 </ul>
 <p>まず、消費（<code>Consumption</code>）を、所得（<code>Income</code>）で説明する。</p>
 <div class="credit">
-<p>TODO(要確認)：パッケージのヘルプは、5つとも変化率（%）としている。<code>Unemployment</code>は、値の大きさから失業率の差（%ポイント）に見える。もとの系列が季節調整済みかどうかも、ヘルプには書かれていない。</p>
+<p>TODO(要確認)：もとの<code>fpp3</code>パッケージのヘルプは、5つとも変化率（%）としている。<code>Unemployment</code>は、値の大きさから失業率の差（%ポイント）に見える。もとの系列が季節調整済みかどうかも、ヘルプには書かれていない。</p>
 </div>
 </section>
 <section id="前処理-1" class="slide level2 fit-90">

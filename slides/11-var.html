@@ -1219,7 +1219,7 @@ margin-right: 0; }
 <span id="cb1-6"><a href></a>  <span class="at">HTTPUserAgent =</span> <span class="fu">sprintf</span>(<span class="st">&quot;R/%s R (%s)&quot;</span>, <span class="fu">getRversion</span>(),</span>
 <span id="cb1-7"><a href></a>    <span class="fu">paste</span>(<span class="fu">getRversion</span>(), R.version[<span class="st">&quot;platform&quot;</span>], R.version[<span class="st">&quot;arch&quot;</span>], R.version[<span class="st">&quot;os&quot;</span>]))</span>
 <span id="cb1-8"><a href></a>)</span>
-<span id="cb1-9"><a href></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;tsibble&quot;</span>, <span class="st">&quot;fable&quot;</span>, <span class="st">&quot;feasts&quot;</span>, <span class="st">&quot;fpp3&quot;</span>, <span class="st">&quot;vars&quot;</span>))</span>
+<span id="cb1-9"><a href></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;tsibble&quot;</span>, <span class="st">&quot;fable&quot;</span>, <span class="st">&quot;feasts&quot;</span>, <span class="st">&quot;vars&quot;</span>))</span>
 <span id="cb1-10"><a href></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
@@ -1228,7 +1228,7 @@ margin-right: 0; }
 <ul>
 <li>ColabのOSの名前を表示する</li>
 <li>パッケージを取ってくる場所と日付を固定する（全員が同じ版を使うため）</li>
-<li>今日使う5つのパッケージを入れる</li>
+<li>今日使う4つのパッケージを入れる</li>
 </ul>
 <p>インストールが終わるまで、次のセルは動かない。待つあいだに話を進める。</p>
 <div class="credit">
@@ -1340,7 +1340,7 @@ y_t &amp;= \underbrace{0.4\,x_{t-1}}_{x \text{ の過去}} + 0.5\,y_{t-1} + w_{y
 <li><span class="math inline">h &gt; 0</span>：<span class="math inline">x</span> と、それよりあとの <span class="math inline">y</span> の相関。<span class="math inline">x</span> が先</li>
 <li><span class="math inline">h &lt; 0</span>：<span class="math inline">x</span> と、それより前の <span class="math inline">y</span> の相関。<span class="math inline">y</span> が先</li>
 </ul>
-<p>第1回のACFは、<span class="math inline">y</span> を <span class="math inline">x</span> 自身に替えたものにあたる。ACFと違い、左右対称とは限らない。</p>
+<p>第1回で定義した。<span class="math inline">y</span> を <span class="math inline">x</span> 自身に替えたものがACFで、ACFと違い、左右対称とは限らない。</p>
 </section>
 <section id="標本ccfを描く" class="slide level2 to-notebook">
 <h2>標本CCFを描く</h2>
@@ -2347,7 +2347,7 @@ w_{y,t} &amp;= \underbrace{b\,u_{1,t}}_{x \text{ と一緒に動いた分}} + \u
 </section>
 <section id="使うデータ" class="slide level2">
 <h2>使うデータ</h2>
-<p><code>fpp3</code>パッケージの<code>us_change</code>。第5回と同じデータである。</p>
+<p><code>us_change</code>（参考書FPP3のデータ。CSVファイルから読む）。第5回と同じデータである。</p>
 <ul>
 <li>米国の経済指標の、四半期ごとの変化率</li>
 <li>個人消費、可処分所得、生産、貯蓄、失業率の5本</li>
@@ -2358,8 +2358,11 @@ w_{y,t} &amp;= \underbrace{b\,u_{1,t}}_{x \text{ と一緒に動いた分}} + \u
 <section id="データを確かめる" class="slide level2 fit-80">
 <h2>データを確かめる</h2>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href></a>us_change <span class="ot">&lt;-</span> fpp3<span class="sc">::</span>us_change</span>
-<span id="cb35-2"><a href></a><span class="fu">glimpse</span>(us_change)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href></a>data_url <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/k0heiun0/timeseries_preview/main/data/&quot;</span></span>
+<span id="cb35-2"><a href></a>us_change <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">paste0</span>(data_url, <span class="st">&quot;us_change.csv&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb35-3"><a href></a>  <span class="fu">mutate</span>(<span class="at">Quarter =</span> <span class="fu">yearquarter</span>(Quarter)) <span class="sc">|&gt;</span></span>
+<span id="cb35-4"><a href></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> Quarter)</span>
+<span id="cb35-5"><a href></a><span class="fu">glimpse</span>(us_change)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; Rows: 198
 #&gt; Columns: 6
